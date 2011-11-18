@@ -2269,6 +2269,7 @@ void Player::RegenerateAll()
     //    return;
 
     m_regenTimerCount += m_regenTimer;
+    m_holyPowerRegenTimerCount += m_regenTimer;
 
     Regenerate(POWER_ENERGY);
 
@@ -2297,6 +2298,12 @@ void Player::RegenerateAll()
             Regenerate(POWER_FOCUS);
 
         m_regenTimerCount -= 2000;
+    }
+
+    if (m_holyPowerRegenTimerCount >= 10000 && getClass() == CLASS_PALADIN)
+    {
+        Regenerate(POWER_HOLY_POWER);
+        m_holyPowerRegenTimerCount -= 10000;
     }
 
     m_regenTimer = 0;
@@ -2344,6 +2351,14 @@ void Player::Regenerate(Powers power)
         case POWER_FOCUS:
             addvalue = 12 * haste;
             break;
+        case POWER_HOLY_POWER:
+        {
+            if (!isInCombat() && !HasAuraType(SPELL_AURA_INTERRUPT_REGEN))
+            {
+                addvalue += -1;               
+            }
+            break;
+        }
         case POWER_ENERGY:                                  // Regenerate energy (rogue)
             addvalue += 0.01f * m_regenTimer * haste * sWorld->getRate(RATE_POWER_ENERGY);
             break;
@@ -2417,7 +2432,7 @@ void Player::Regenerate(Powers power)
         else
             m_powerFraction[power] = addvalue - integerValue;
     }
-    if (m_regenTimerCount >= 2000)
+    if (m_regenTimerCount >= 2000 || m_holyPowerRegenTimerCount >= 10000)
         SetPower(power, curValue);
     else
         UpdateUInt32Value(UNIT_FIELD_POWER1 + power, curValue);
@@ -6784,7 +6799,7 @@ void Player::CheckAreaExploreAndOutdoor()
                 else
                 {
                     XP = uint32(sObjectMgr->GetBaseXP(p->area_level)*sWorld->getRate(RATE_XP_EXPLORE));
-                }				
+                }
                 if(GetSession()->IsPremium())
                 XP *= sWorld->getRate(RATE_XP_EXPLORE_PREMIUM);
                 GiveXP(XP, NULL);
@@ -15112,7 +15127,7 @@ void Player::RewardQuest(Quest const *pQuest, uint32 reward, Object* questGiver,
     Unit::AuraEffectList const& ModXPPctAuras = GetAuraEffectsByType(SPELL_AURA_MOD_XP_QUEST_PCT);
     for (Unit::AuraEffectList::const_iterator i = ModXPPctAuras.begin(); i != ModXPPctAuras.end(); ++i)
         XP = uint32(XP*(1.0f + (*i)->GetAmount() / 100.0f));
-		
+
     if (GetSession()->IsPremium())
         XP *= sWorld->getRate(RATE_XP_QUEST_PREMIUM);
 		

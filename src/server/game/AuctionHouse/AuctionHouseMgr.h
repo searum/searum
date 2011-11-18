@@ -29,7 +29,6 @@
 #include "DatabaseEnv.h"
 #include "DBCStructure.h"
 
-
 class Item;
 class Player;
 class WorldPacket;

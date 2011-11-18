@@ -794,6 +794,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     std::string accountName;
     LocaleConstant locale;
     bool isPremium = false;
+	
     SHA1Hash sha1;
     BigNumber v, s, g, N, K;
     WorldPacket packet;
@@ -965,7 +966,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
         sLog->outError ("WorldSocket::HandleAuthSession: Sent Auth Response (Account banned).");
         return -1;
     }
-
+	
     QueryResult premresult =
         LoginDatabase.PQuery ("SELECT 1 "
                                 "FROM account_premium "
@@ -1031,7 +1032,7 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
                             safe_account.c_str());
 
     // NOTE ATM the socket is single-threaded, have this in mind ...
-    ACE_NEW_RETURN (m_Session, WorldSession (id, this, AccountTypes(security), isPremium, expansion, mutetime, locale, recruiter), -1);
+    ACE_NEW_RETURN (m_Session, WorldSession (id, this, AccountTypes(security), expansion, mutetime, locale, recruiter), -1);
 
     m_Crypt.Init(&K);
 

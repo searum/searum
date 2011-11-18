@@ -468,6 +468,7 @@ void World::LoadConfigSettings(bool reload)
     rate_values[RATE_XP_QUEST_PREMIUM]   = sConfig->GetFloatDefault("Rate.XP.Quest.Premium", 1.0f);
     rate_values[RATE_XP_EXPLORE]         = sConfig->GetFloatDefault("Rate.XP.Explore", 1.0f);
     rate_values[RATE_XP_EXPLORE_PREMIUM] = sConfig->GetFloatDefault("Rate.XP.Explore.Premium", 1.0f);
+
     rate_values[RATE_REPAIRCOST]  = sConfig->GetFloatDefault("Rate.RepairCost", 1.0f);
     if (rate_values[RATE_REPAIRCOST] < 0.0f)
     {
@@ -1764,8 +1765,7 @@ void World::SetInitialWorldSettings()
 
     sLog->outString("Calculate currency week cap reset time..." );
     InitCurrencyResetTime();
-	
-	
+
     // possibly enable db logging; avoid massive startup spam by doing it here.
     if (sLog->GetLogDBLater())
     {
@@ -1936,6 +1936,7 @@ void World::Update(uint32 diff)
     /// <ul><li> Handle auctions when the timer has passed
     if (m_timers[WUPDATE_AUCTIONS].Passed())
     {
+        m_timers[WUPDATE_AUCTIONS].Reset();
 
         ///- Update mails (return old mails with item, or delete them)
         //(tested... works on win)

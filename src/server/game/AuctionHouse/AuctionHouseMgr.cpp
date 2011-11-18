@@ -294,7 +294,7 @@ void AuctionHouseMgr::SendAuctionOutbiddedMail(AuctionEntry *auction, uint64 new
     {
         std::ostringstream msgAuctionOutbiddedSubject;
         msgAuctionOutbiddedSubject << auction->item_template << ":0:" << AUCTION_OUTBIDDED << ":0:0";
-        			
+
         if (oldBidder && newBidder)
             oldBidder->GetSession()->SendAuctionBidderNotification(auction->GetHouseId(), auction->Id, newBidder->GetGUID(), newPrice, auction->GetAuctionOutBid(), auction->item_template);
 
